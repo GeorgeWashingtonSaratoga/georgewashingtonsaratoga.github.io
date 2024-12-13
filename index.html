@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RETRO REPOSITORIES</title>
+    <link id="icon" , rel="icon" href="icon.png">
+    <style>
+        body {
+            background: url('https://www.nasa.gov/wp-content/uploads/2015/06/edu_what_is_hubble3.jpg'); /* Tiled retro background */
+            font-family: 'Courier New', monospace;
+            color: lime;
+            text-align: center;
+            margin: 0;
+            padding: 0;
+        }
+
+        h1 {
+            text-shadow: 2px 2px magenta;
+            animation: neonGlow 1s infinite alternate;
+        }
+
+        @keyframes neonGlow {
+            from {
+                text-shadow: 0 0 5px magenta, 0 0 20px magenta, 0 0 30px magenta;
+            }
+            to {
+                text-shadow: 0 0 10px cyan, 0 0 30px cyan, 0 0 50px cyan;
+            }
+        }
+
+        .marquee {
+            width: 100%;
+            overflow: hidden;
+            white-space: nowrap;
+            box-sizing: border-box;
+            background: black;
+            color: yellow;
+            font-size: 1.5em;
+            padding: 10px 0;
+            animation: scroll 10s linear infinite;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .marquee img {
+            width: 32px;
+            height: 32px;
+            margin: 0 5px;
+        }
+
+        @keyframes scroll {
+            from {
+                transform: translateX(100%);
+            }
+            to {
+                transform: translateX(-100%);
+            }
+        }
+
+        .repo-container {
+            margin: 20px auto;
+            text-align: left;
+            max-width: 600px;
+            background: rgba(0, 0, 0, 0.8);
+            padding: 15px;
+            border: 3px dashed lime;
+        }
+
+        .repo {
+            margin: 10px 0;
+            padding: 10px;
+            border-bottom: 1px solid lime;
+            display: flex;
+            align-items: center;
+        }
+
+        .repo a {
+            color: cyan;
+            text-decoration: none;
+            margin-left: 10px;
+            flex-grow: 1;
+        }
+
+        .repo a:hover {
+            text-decoration: underline;
+        }
+
+        .repo img {
+            width: 32px;
+            height: 32px;
+            margin-right: 10px;
+        }
+
+        .star-button {
+            background: transparent;
+            border: none;
+            cursor: pointer;
+        }
+
+        .star-button img {
+            width: 16px;
+            height: 16px;
+        }
+
+        .tacky-gif {
+            width: 100px;
+            margin: 10px auto;
+        }
+
+        .side-sparkle {
+            position: fixed;
+            top: 50%;
+            left: 0;
+            transform: translateY(-50%);
+            width: 50px;
+        }
+
+        footer {
+            margin-top: 20px;
+        }
+
+        footer img {
+            width: 64px;
+            margin: 0 10px;
+        }
+    </style>
+</head>
+<body>
+    <h1>GEORGE WASHINGTON'S RETRO REPOSITORIES</h1>
+
+    <div class="marquee">
+        <img src="space.gif" alt="Space GIF">
+        <img src="tehWorld.gif" alt="World GIF">
+        SURF THE SITE, STAR WHAT YOU LIKE
+        <img src="UFO.gif" alt="UFO GIF">
+        <img src="space2.gif" alt="Space 2 GIF">
+    </div>
+
+    <img class="side-sparkle" src="sideSparkle.gif" alt="Side Sparkle GIF">
+
+    <img class="tacky-gif" src="dino.gif" alt="Dinosaur GIF">
+
+    <div id="repos" class="repo-container">
+        <p>Loading @w3s0m3 repositories...</p>
+    </div>
+
+    <footer>
+        <p>TAKE RESPONSIBILITY</p>
+        <img src="UFO2.gif" alt="UFO GIF">
+        <img src="tehWorld.gif" alt="World GIF">
+    </footer>
+
+    <script>
+        const hiddenRepos = ["Themes", "sigmagle", "siteUnblocker", "kijechat", "georgewashingtonsaratoga", "doxxingmachine"];
+        const username = "GeorgeWashingtonSaratoga"; // Replace with your GitHub username
+        const sheetURL = "https://script.google.com/macros/s/AKfycbxrxhORvU-t_VoiKtGrjJwhtlFvHOCrIHjIZYQJCYnpaKOBqXoCaZse4PYMHznKSGs/exec";
+        let repoLikes = {};
+        
+        async function getLikesFromSheet() {
+            const response = await fetch(sheetURL);
+            const data = await response.json();
+            const repoLikes = {};
+            console.log("getLikesFromSheet response, data, repolikes: ");
+            console.log(response);
+            console.log(data);
+            data.slice(1).forEach(row => {
+                repoLikes[row[0]] = row[1];
+            });
+            console.log(repoLikes);
+            return repoLikes;
+        }
+        
+        async function updateLikesInSheet(repoName, newLikes) {
+            try {
+                const response = await fetch(sheetURL, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ repoName, likes: newLikes })
+                });
+                if (!response.ok) {
+                    throw new Error(`HTTP error! Status: ${response.status}`);
+                }
+                const result = await response.json();
+                console.log("Update response:", result);
+            } catch (error) {
+                console.error("Error updating likes:", error);
+            }
+        }
+
+
+        async function getLikes(repoName, repoLikes) {
+            console.log("getLikes repoLikes and repoName: ");
+            console.log(repoLikes);
+            console.log(repoName);
+            return repoLikes[repoName] || 0;
+        }
+        
+        async function fetchLikes() {
+            repoLikes = await getLikesFromSheet();
+            console.log("fetchLikes repolikes: ");
+            console.log(repoLikes);
+            return repoLikes;
+        }
+
+        async function fetchRepos() {
+            const response = await fetch(`https://api.github.com/users/${username}/repos`);
+            const repos = await response.json();
+        
+            const repoContainer = document.getElementById('repos');
+            repoContainer.innerHTML = ""; // Clear loading text
+        
+            // Filter out hidden repositories
+            const visibleRepos = repos.filter(repo => !hiddenRepos.includes(repo.name));
+        
+            visibleRepos.forEach(repo => {
+                const repoIcon = `${repo.name}.png`; // Path to custom icon
+                const likes = getLikes(repo.name, repoLikes);
+
+                const repoElement = document.createElement('div');
+                repoElement.className = 'repo';
+
+                if (repo.name == "www.pornhub.com") {
+                    repoElement.innerHTML = `
+                        <img src="${repoIcon}" alt="${repo.name} icon" onerror="this.src='https://i.imgur.com/HFpxx1y.png'">
+                        <a href="https://${username}.github.io/storySite.png" target="_blank">${repo.name}</a>
+                        <button class="star-button" onclick="toggleLike('${repo.name}', this)">
+                            <img src="starOff.png" alt="Star Unclicked">  
+                            <span>${likes || "LIKES ERR"}</span>
+                        </button>
+                        <p>${repo.description || "No description available."}</p>
+                    `;
+                    
+                } else {
+                    repoElement.innerHTML = `
+                        <img src="${repoIcon}" alt="${repo.name} icon" onerror="this.src='https://i.imgur.com/HFpxx1y.png'">
+                        <a href="https://${username}.github.io/${repo.name}" target="_blank">${repo.name}</a>
+                        <button class="star-button" onclick="toggleLike('${repo.name}', this)">
+                            <img src="starOff.png" alt="Star Unclicked">  
+                            <span>${likes || "LIKES ERR"}</span>
+                        </button>
+                        <p>${repo.description || "No description available."}</p>
+                    `;
+                }
+                repoContainer.appendChild(repoElement);
+            });
+        }
+
+        function toggleLike(repoName, button) {
+            const currentLikes = repoLikes[repoName] || 0;
+            const newLikes = currentLikes + 1;
+            repoLikes[repoName] = newLikes;
+        
+            // Update UI
+            const likesSpan = button.querySelector("span");
+            likesSpan.textContent = newLikes;
+        
+            const starImg = button.querySelector("img");
+            starImg.src = "starOn.png";
+        
+            // Update Google Sheet
+            updateLikesInSheet(repoName, newLikes);
+        }
+
+        fetchRepos().catch(err => {
+            console.error("Error fetching repos:", err);
+            document.getElementById('repos').innerHTML = "<p>Failed to load repositories.</p>";
+        });
+    </script>
+</body>
+</html>
