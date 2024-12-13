@@ -223,8 +223,8 @@
 
                 if (repo.name == "www.pornhub.com") {
                     repoElement.innerHTML = `
-                        <img src="${repoIcon}" alt="${repo.name} icon" onerror="this.src='https://i.imgur.com/HFpxx1y.png'">
-                        <a href="https://${username}.github.io/storySite.png" target="_blank">${repo.name}</a>
+                        <img src="storySite.png" alt="${repo.name} icon" onerror="this.src='err.gif'">
+                        <a href="https://${username}.github.io/${repo.name}" target="_blank">${repo.name}</a>
                         <button class="star-button" onclick="toggleLike('${repo.name}', this)">
                             <img src="starOff.png" alt="Star Unclicked">  
                             <span>${likes || "LIKES ERR"}</span>
@@ -234,7 +234,7 @@
                     
                 } else {
                     repoElement.innerHTML = `
-                        <img src="${repoIcon}" alt="${repo.name} icon" onerror="this.src='https://i.imgur.com/HFpxx1y.png'">
+                        <img src="${repoIcon}" alt="${repo.name} icon" onerror="this.src='err.gif'">
                         <a href="https://${username}.github.io/${repo.name}" target="_blank">${repo.name}</a>
                         <button class="star-button" onclick="toggleLike('${repo.name}', this)">
                             <img src="starOff.png" alt="Star Unclicked">  
